@@ -12,8 +12,8 @@ Gem::Specification.new do |spec|
 	spec.email       = "akanshul97@gmail.com"
 
 	# Dependencies
-	spec.add_dependency 			"general", "^1.2.8"
-	spec.add_development_dependency "rspec",   "^3.4.4"
+	spec.add_dependency 			"general", ">1.2.8"
+	spec.add_development_dependency "rspec",   ">3.4.4"
 
 	#Files
 	spec.files       = []
