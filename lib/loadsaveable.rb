@@ -26,6 +26,8 @@ module Roject
 	#
 	# Note: Implementing objects need to respond to the :hash method
 	# 		which returns a hash of the data that needs to be saved
+	# 		and a private config method which sets the data to the 
+	# 		given hash (for unit testing)
 	#
 	# Author:  Anshul Kharbanda
 	# Created: 7 - 10 - 2016

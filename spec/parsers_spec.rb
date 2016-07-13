@@ -67,7 +67,51 @@ describe Roject::Parsers do
 		#
 		# Return: the given hash formatted to pretty json
 		describe '::format' do
-			it 'formats the given hash into pretty JSON' do
+			it 'formats the given hash into pretty json' do
+				expect(@parser.format(@hash)).to eql @text
+			end
+		end
+	end
+
+	# Describing Roject::Parsers::YAMLParser
+	#
+	# Parses JSON files
+	#
+	# Author:  Anshul Kharbanda
+	# Created: 7 - 11 - 2016
+	describe '::YAMLParser' do
+
+		#----------------------------------BEFORE-----------------------------------
+
+		before :all do 
+			@text = YAML.dump(stringified(@hash))
+			@parser = Roject::Parsers::YAMLParser
+		end
+
+		#----------------------------------METHODS----------------------------------
+
+		# Describing Roject::Parsers::YAMLParser::parse
+		#
+		# Parses the given yaml text into a hash
+		#
+		# Parameter: text - the yaml text to parse
+		#
+		# Return: the hash parsed from the text
+		describe '::parse' do
+			it 'parses the given YAML text into a ruby hash' do
+				expect(@parser.parse(@text)).to eql @hash
+			end
+		end
+
+		# Describing Roject::Parsers::YAMLParser::format
+		#
+		# Returns the object hash formatted to yaml
+		#
+		# Parameter: hash - the hash to format
+		#
+		# Return: the given hash formatted to yaml
+		describe '::format' do
+			it 'formats the given hash into yaml' do
 				expect(@parser.format(@hash)).to eql @text
 			end
 		end
@@ -78,6 +122,7 @@ describe Roject::Parsers do
 	describe '::get' do
 		it 'returns the appropriate parser according to the extension of the given filename' do
 			expect(Roject::Parsers.get("foo.json")).to eql Roject::Parsers::JSONParser
+			expect(Roject::Parsers.get("foo.yaml")).to eql Roject::Parsers::YAMLParser
 		end
 	end
 end

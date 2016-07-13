@@ -27,11 +27,12 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 	#---------------------------------------BEFORE----------------------------------------
 
 	before :all do
-		@dir = "exp"
-		@default_hash = { project_name: "project" }
-		@modded_hash = { project_name: "superproject", author: "Anshul Kharbanda" }
-		@pjson_name = "#{@dir}/project.json"
-		@phony_name = "#{@dir}/project.foo"
+		@dir = "exp/loadsaveable"
+		@default_hash = { name: "project" }
+		@modded_hash = { name: "superproject", author: "Anshul Kharbanda" }
+		@pjson_name = "#{@dir}/foo.json"
+		@pyaml_name = "#{@dir}/foo.yaml"
+		@phony_name = "#{@dir}/foo.bar"
 	end
 
 	#--------------------------------------METHODS-----------------------------------------
@@ -80,6 +81,14 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 			end
 		end
 
+		context "with a .yaml filename given" do
+			it "returns a new #{loadsaveable_class.name} from the yaml file with the given filename" do
+				project = loadsaveable_class.load(@pyaml_name)
+				expect(project).to be_an_instance_of loadsaveable_class
+				expect(project.hash).to eql read_yaml(@pyaml_name)
+			end
+		end
+
 		#-----------------------------UNSUPPORTED-----------------------------
 
 		context "with an unsupported file extension given" do
@@ -113,6 +122,13 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 			end
 		end
 
+		context "with a .yaml filename given" do
+			it "saves the project to the given filename in yaml format" do
+				@project.save @pyaml_name
+				expect(read_yaml(@pyaml_name)).to eql @modded_hash
+			end
+		end
+
 		#-----------------------------UNSUPPORTED-----------------------------
 
 		context "with an unsupported file extension given" do
@@ -125,6 +141,7 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 
 		after :all do 
 			write_json @pjson_name, @default_hash
+			write_yaml @pyaml_name, @default_hash
 		end
 	end
 
@@ -169,7 +186,37 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 
 				it "saves the #{loadsaveable_class.name} when the block ends" do
 					# Check if the modded project was saved
-					expect(JSON.parse(IO.read(@pjson_name), symbolize_names: true)).to eql @modded_hash
+					expect(read_json(@pjson_name)).to eql @modded_hash
+				end
+			end
+
+			context "when file is .yaml" do
+				# Declare project local variable
+				project = nil
+
+				it "loads a #{loadsaveable_class.name} from the yaml file with the given filename (calling #load)" do
+					# Declare modded_hash local variable
+					mhash = @modded_hash
+
+					# Open project in a block
+					expect { loadsaveable_class.open @pyaml_name do
+						# Set project to instance
+						project = self
+
+						# Modify project
+						config mhash
+					end }.not_to raise_error
+				end
+
+				it "evaluates the given block in the context of the loaded #{loadsaveable_class.name}" do
+					# Check if project was actually self, and it was successfuly modified
+					expect(project).to be_an_instance_of loadsaveable_class
+					expect(project.hash).to eql @modded_hash
+				end
+
+				it "saves the #{loadsaveable_class.name} when the block ends" do
+					# Check if the modded project was saved
+					expect(read_yaml(@pyaml_name)).to eql @modded_hash
 				end
 			end
 
@@ -181,8 +228,9 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 				end
 			end
 
-			after :all do
+			after :all do 
 				write_json @pjson_name, @default_hash
+				write_yaml @pyaml_name, @default_hash
 			end
 		end
 
@@ -192,6 +240,14 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 			context "when file is .json" do
 				it "loads a #{loadsaveable_class.name} from the json file with the given filename (calling #load) and returns it." do
 					project = loadsaveable_class.open @pjson_name
+					expect(project).to be_an_instance_of loadsaveable_class
+					expect(project.hash).to eql @default_hash
+				end
+			end
+
+			context "when file is .yaml" do
+				it "loads a #{loadsaveable_class.name} from the yaml file with the given filename (calling #load) and returns it." do
+					project = loadsaveable_class.open @pyaml_name
 					expect(project).to be_an_instance_of loadsaveable_class
 					expect(project.hash).to eql @default_hash
 				end

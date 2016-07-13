@@ -12,6 +12,7 @@ Created: 7 - 8 - 2016
 =end
 
 require "json"
+require "yaml"
 
 # Roject is a programming project manager written in Ruby.
 #
@@ -62,14 +63,54 @@ module Roject
 			# Parameter: text - the json text to parse
 			#
 			# Return: the hash parsed from the text
-			def self.parse(text); JSON.parse(text, symbolize_names: true); end
+			def self.parse(text); JSON.parse text, symbolize_names: true; end
 
 			# Returns the given hash formatted to pretty json
 			#
 			# Parameter: hash - the hash to format
 			#
 			# Return: the given hash formatted to pretty json
-			def self.format(hash); JSON.pretty_generate(hash, indent: "\t"); end
+			def self.format(hash); JSON.pretty_generate hash, indent: "\t"; end
+		end
+
+		# Parses YAML files
+		#
+		# Author:  Anshul Kharbanda
+		# Created: 7 - 13 - 2016
+		class YAMLParser < Parser
+			# Parses the given yaml text into a hash
+			#
+			# Parameter: text - the yaml text to parse
+			#
+			# Return: the hash parsed from the text
+			def self.parse(text); symbolized YAML.load text; end
+
+			# Returns the given hash formatted to yaml
+			#
+			# Parameter: hash - the hash to format
+			#
+			# Return: the given hash formatted to yaml
+			def self.format(hash); YAML.dump stringified hash end
+
+			private
+
+			# Returns the hash with all of the keys converted to symbols
+			#
+			# Parameter: hash - the hash to symbolize
+			#
+			# Return: the hash with all of the keys converted to symbols
+			def self.symbolized hash
+				hash.each_pair.collect { |k, v| [k.to_sym, v.is_a?(Hash) ? symbolized(v) : v] }.to_h
+			end
+
+			# Returns the hash with all of the keys converted to strings
+			#
+			# Parameter: hash - the hash to stringify
+			#
+			# Return: the hash with all of the keys converted to strings
+			def self.stringified hash
+				hash.each_pair.collect { |k, v| [k.to_s,   v.is_a?(Hash) ? stringified(v) : v] }.to_h
+			end
 		end
 
 		#-----------------------------------------GET------------------------------------------
@@ -82,6 +123,7 @@ module Roject
 		def self.get(filename)
 			case File.extname(filename)
 			when ".json" then return JSONParser
+			when ".yaml" then return YAMLParser
 				
 			# Raise error if extension is not supported
 			else raise LoadError, "#{File.extname(filename)} not supported!" 
