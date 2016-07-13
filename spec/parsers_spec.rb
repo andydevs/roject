@@ -35,12 +35,12 @@ describe Roject::Parsers do
 	#
 	# Author:  Anshul Kharbanda
 	# Created: 7 - 11 - 2016
-	describe 'JSONParser' do
+	describe '::JSONParser' do
 
 		#----------------------------------BEFORE-----------------------------------
 
 		before :all do 
-			@json = JSON.pretty_generate(@hash, indent: "\t") 
+			@text = JSON.pretty_generate(@hash, indent: "\t") 
 			@parser = Roject::Parsers::JSONParser
 		end
 
@@ -55,7 +55,7 @@ describe Roject::Parsers do
 		# Return: the hash parsed from the text
 		describe '::parse' do
 			it 'parses the given JSON text into a ruby hash' do
-				expect(@parser.parse(@json)).to eql @hash
+				expect(@parser.parse(@text)).to eql @hash
 			end
 		end
 
@@ -68,7 +68,7 @@ describe Roject::Parsers do
 		# Return: the given hash formatted to pretty json
 		describe '::format' do
 			it 'formats the given hash into pretty JSON' do
-				expect(@parser.format(@hash)).to eql @json
+				expect(@parser.format(@hash)).to eql @text
 			end
 		end
 	end

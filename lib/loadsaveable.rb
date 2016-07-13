@@ -22,7 +22,7 @@ module Roject
 	# Implementing objects can be loaded from and saved to files in
 	# any of the supported data storage formats.
 	#
-	# Formats: json, yaml
+	# Formats: json
 	#
 	# Note: Implementing objects need to respond to the :hash method
 	# 		which returns a hash of the data that needs to be saved

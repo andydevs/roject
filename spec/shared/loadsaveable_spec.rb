@@ -13,10 +13,16 @@ Created: 7 - 8 - 2016
 
 # Describing loadsaveable_class
 #
-# Represents a programming project managed by Roject
+# Implementing objects can be loaded from and saved to files in
+# any of the supported data storage formats.
+#
+# Formats: json
+#
+# Note: Implementing objects need to respond to the :hash method
+# 		which returns a hash of the data that needs to be saved
 #
 # Author:  Anshul Kharbanda
-# Created: 7 - 8 - 2016
+# Created: 7 - 11 - 2016
 shared_examples "loadsaveable" do |loadsaveable_class|
 	#---------------------------------------BEFORE----------------------------------------
 
