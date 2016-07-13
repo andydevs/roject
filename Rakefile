@@ -74,12 +74,12 @@ end
 #-----------------------------------GIT-----------------------------------
 
 namespace :git do
-	desc "Pushes changes to remote"
+	desc "Push changes to remote"
 	task :push, [:message] => :commit do
 		sh "git push origin master"
 	end
 
-	desc "Commits changes"
+	desc "Commit changes"
 	task :commit, [:message] do |task, args|
 		sh "git add --all"
 		sh "git commit -m #{args[:message].inspect}"
