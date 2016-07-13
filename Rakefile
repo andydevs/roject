@@ -75,12 +75,12 @@ end
 
 namespace :git do
 	desc "Pushes changes to remote"
-	task :commit, [:message] => :commit_local do
+	task :push, [:message] => :commit do
 		sh "git push origin master"
 	end
 
 	desc "Commits changes"
-	task :commit_local, [:message] do |task, args|
+	task :commit, [:message] do |task, args|
 		sh "git add --all"
 		sh "git commit -m #{args[:message].inspect}"
 	end
