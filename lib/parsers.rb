@@ -26,9 +26,9 @@ module Roject
 	module Parsers
 		# Generic class parses files of a given type
 		#
-		# Subclasses must respond to :parse and :generate methods
+		# Subclasses must respond to :parse and :format methods
 		# 	- parse recieves a string and returns a hash
-		# 	- generate recieves a hash and returns a string
+		# 	- format recieves a hash and returns a string
 		#
 		# Author:  Anshul Kharbanda
 		# Created: 7 - 11 - 2016
@@ -39,7 +39,7 @@ module Roject
 			# Returns the descendants of Parser
 			#
 			# Return: the descendants of Parser
-			def self.descendents
+			def self.descendants
 				ObjectSpace.each_object(Class).select {|c| c < self}
 			end
 
@@ -121,13 +121,16 @@ module Roject
 		#
 		# Return: the parser for the given filename
 		def self.get(filename)
-			case File.extname(filename)
-			when ".json" then return JSONParser
-			when ".yaml" then return YAMLParser
-				
-			# Raise error if extension is not supported
-			else raise LoadError, "#{File.extname(filename)} not supported!" 
+			# Get parser from filename
+			parser = Parser.descendants.find do |klass| 
+				klass.extension == File.extname(filename)
 			end
+
+			# Raise LoadError if parser is nil (extension is not supported)
+			raise LoadError, "#{File.extname(filename)} not supported!" if parser.nil?
+
+			# Otherwise return parser
+			return parser
 		end
 	end
 end
