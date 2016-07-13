@@ -34,9 +34,8 @@ module Roject
 			@project = hash
 		end
 
-		def config hash
-			@project = hash
-		end
+		# This is a test method and is depricated by default. Do not use!
+		def config(hash); @project = hash; end
 
 		# Returns a hash of the data contained in the project
 		#

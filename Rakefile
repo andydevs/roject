@@ -71,5 +71,30 @@ namespace :gem do
 	end
 end
 
+#-----------------------------------GIT-----------------------------------
+
+namespace :git do
+	desc "Pushes changes to remote"
+	task :commit, [:message] => :commit_local do
+		sh "git push origin master"
+	end
+
+	desc "Commits changes"
+	task :commit_local, [:message] do |task, args|
+		sh "git add --all"
+		sh "git commit -m #{args[:message].inspect}"
+	end
+
+	desc "Soft git reset"
+	task :reset do
+		sh "git reset"
+	end
+
+	desc "Hard git reset"
+	task :reset_hard do
+		sh "git reset --hard HEAD"
+	end
+end
+
 # Default spec
 task :default => "spec"
