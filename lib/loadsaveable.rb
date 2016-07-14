@@ -22,12 +22,11 @@ module Roject
 	# Implementing objects can be loaded from and saved to files in
 	# any of the supported data storage formats.
 	#
-	# Formats: json
+	# Formats: json, yaml
 	#
-	# Note: Implementing objects need to respond to the :hash method
-	# 		which returns a hash of the data that needs to be saved
-	# 		and a private config method which sets the data to the 
-	# 		given hash (for unit testing)
+	# Note: Implementing objects must have a constructor with takes a single hash 
+	# 		argument and respond to the :hash method which returns a hash of the 
+	# 		data that needs to be saved 
 	#
 	# Author:  Anshul Kharbanda
 	# Created: 7 - 10 - 2016

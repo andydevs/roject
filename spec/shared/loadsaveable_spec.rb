@@ -174,7 +174,7 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 						project = self
 
 						# Modify project
-						config mhash
+						initialize mhash
 					end }.not_to raise_error
 				end
 
@@ -204,7 +204,7 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 						project = self
 
 						# Modify project
-						config mhash
+						initialize mhash
 					end }.not_to raise_error
 				end
 

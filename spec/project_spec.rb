@@ -21,5 +21,7 @@ require_relative "spec_require"
 # Author:  Anshul Kharbanda
 # Created: 7 - 8 - 2016
 describe Roject::Project do
-	include_examples "loadsaveable", Roject::Project
+	describe 'include LoadSaveable' do
+		include_examples "loadsaveable", Roject::Project
+	end
 end
