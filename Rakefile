@@ -23,11 +23,11 @@ GEMDIR  = "gem"
 SPECDIR = "spec"
 
 # Default task
-task :default => "spec"
+task :default => :spec
 
 #----------------------------------RSPEC----------------------------------
 
-RSpec::Core::RakeTask.new :spec do |task|
+RSpec::Core::RakeTask.new do |task|
 	task.pattern    = "#{SPECDIR}/*_spec.rb"
 	task.rspec_opts = "--format documentation --color"
 end
@@ -35,6 +35,8 @@ end
 #-----------------------------------GEM-----------------------------------
 
 Gem::Tasks.new
+
+#-----------------------------------GIT-----------------------------------
 
 namespace :git do
 	desc "Push changes to remote"
