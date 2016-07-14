@@ -301,6 +301,14 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 				end
 			end
 
+			context "when file is .yml" do
+				it "loads a #{loadsaveable_class.name} from the yml file with the given filename (calling #load) and returns it." do
+					project = loadsaveable_class.open @pyml_name
+					expect(project).to be_an_instance_of loadsaveable_class
+					expect(project.hash).to eql @default_hash
+				end
+			end
+
 			#-----------------------------UNSUPPORTED-----------------------------
 
 			context "when filetype is unsupported" do
