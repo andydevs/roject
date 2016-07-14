@@ -13,6 +13,7 @@ Created: 7 - 8 - 2016
 
 # Required libraries
 require "rspec/core/rake_task"
+require "rubygems/tasks"
 
 # Requird files
 require_relative "lib/roject"
@@ -21,57 +22,19 @@ require_relative "lib/roject"
 GEMDIR  = "gem"
 SPECDIR = "spec"
 
+# Default task
+task :default => "spec"
+
 #----------------------------------RSPEC----------------------------------
 
 RSpec::Core::RakeTask.new :spec do |task|
 	task.pattern    = "#{SPECDIR}/*_spec.rb"
-	task.rspec_opts = "--format documentation", 
-					  "--color"
+	task.rspec_opts = "--format documentation --color"
 end
 
 #-----------------------------------GEM-----------------------------------
 
-namespace :gem do
-	
-	#----------------------------------GEM CLEAR TASKS----------------------------------
-
-	namespace :clear do
-		desc "Clear all gems"
-		task :all do
-			sh "rm #{GEMDIR}/*.gem"	
-		end
-
-		desc "Clear old gems"
-		task :old do
-			sh "rm #{FileList.new("#{GEMDIR}/*.gem")
-							 .exclude("#{GEMDIR}/roject-#{Roject::VERSION}.gem")}"
-		end
-	end
-
-	#----------------------------------GEM BUILD TASKS----------------------------------
-
-	desc "Build gem and push to Rubygems"
-	task :push => "#{GEMDIR}/roject-#{Roject::VERSION}.gem" do |task|
-		sh "gem push #{task.source}"
-	end
-
-	desc "Build gem and install locally"
-	task :install => "#{GEMDIR}/roject-#{Roject::VERSION}.gem" do |task|
-		sh "gem install #{task.source}"
-	end
-
-	desc "Just buid gem"
-	task :build => "#{GEMDIR}/roject-#{Roject::VERSION}.gem"
-
-	#-------------------------------BUILD GEM FROM GEMSPEC------------------------------
-
-	file "#{GEMDIR}/roject-#{Roject::VERSION}.gem" => "roject.gemspec" do |task|
-		sh "gem build #{task.source}"
-		sh "mv #{File.basename(task.name)} #{File.dirname(task.name)}"
-	end
-end
-
-#-----------------------------------GIT-----------------------------------
+Gem::Tasks.new
 
 namespace :git do
 	desc "Push changes to remote"
@@ -95,6 +58,3 @@ namespace :git do
 		sh "git reset --hard HEAD"
 	end
 end
-
-# Default spec
-task :default => "spec"
