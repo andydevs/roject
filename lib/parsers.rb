@@ -44,11 +44,28 @@ module Roject
 				ObjectSpace.each_object(Class).select {|c| c < self}
 			end
 
-			# Returns the extension name of the parser filetype
+			# Returns true if the parser is to be used for the given filename
 			#
-			# Return: the extension name of the parser filetype
-			def self.extension
-				"." + PARSER_REGEX.match(self.name)[:name].downcase
+			# Return: true if the parser is to be used for the given filename
+			def self.for_filename? filename
+				@@extensions.include? File.extname(filename)
+			end
+		end
+
+		# Returns the parser for the given filename
+		#
+		# Parameter: filename - the name of the file to parse
+		#
+		# Return: the parser for the given filename
+		def self.get(filename)
+			# Get parser from filename
+			parser = Parser.descendants.find { |klass| klass.for_filename? filename }
+
+			# Raise LoadError if no parser is found, else return parser
+			if parser.nil?
+				raise LoadError, "#{File.extname(filename)} not supported!"
+			else
+				return parser
 			end
 		end
 
@@ -59,6 +76,9 @@ module Roject
 		# Author:  Anshul Kharbanda
 		# Created: 7 - 11 - 2016
 		class JSONParser < Parser
+			# The extension supported for JSON
+			@@extensions = [".json"]
+
 			# Parses the given json text into a hash
 			#
 			# Parameter: text - the json text to parse
@@ -79,6 +99,9 @@ module Roject
 		# Author:  Anshul Kharbanda
 		# Created: 7 - 13 - 2016
 		class YAMLParser < Parser
+			# The extensions supported for YAML
+			@@extensions = [".yaml", ".yml"]
+
 			# Parses the given yaml text into a hash
 			#
 			# Parameter: text - the yaml text to parse
@@ -112,26 +135,6 @@ module Roject
 			def self.stringified hash
 				hash.each_pair.collect { |k, v| [k.to_s,   v.is_a?(Hash) ? stringified(v) : v] }.to_h
 			end
-		end
-
-		#-----------------------------------------GET------------------------------------------
-
-		# Returns the parser for the given filename
-		#
-		# Parameter: filename - the name of the file to parse
-		#
-		# Return: the parser for the given filename
-		def self.get(filename)
-			# Get parser from filename
-			parser = Parser.descendants.find do |klass| 
-				klass.extension == File.extname(filename)
-			end
-
-			# Raise LoadError if parser is nil (extension is not supported)
-			raise LoadError, "#{File.extname(filename)} not supported!" if parser.nil?
-
-			# Otherwise return parser
-			return parser
 		end
 	end
 end
