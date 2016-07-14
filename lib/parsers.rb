@@ -27,9 +27,10 @@ module Roject
 	module Parsers
 		# Generic class parses files of a given type
 		#
-		# Subclasses must respond to :parse and :format methods
+		# Subclasses must respond to :parse, :format, and :extension methods
 		# 	- parse recieves a string and returns a hash
 		# 	- format recieves a hash and returns a string
+		# 	- extensions returns all of the supported extensions of the Parser
 		#
 		# Author:  Anshul Kharbanda
 		# Created: 7 - 11 - 2016
@@ -48,7 +49,7 @@ module Roject
 			#
 			# Return: true if the parser is to be used for the given filename
 			def self.for_filename? filename
-				@@extensions.include? File.extname(filename)
+				extensions.include? File.extname(filename)
 			end
 		end
 
@@ -76,8 +77,10 @@ module Roject
 		# Author:  Anshul Kharbanda
 		# Created: 7 - 11 - 2016
 		class JSONParser < Parser
-			# The extension supported for JSON
-			@@extensions = [".json"]
+			# Returns the extensions supported for JSON
+			# 
+			# Return: the extensions supported for JSON
+			def self.extensions; [".json"]; end
 
 			# Parses the given json text into a hash
 			#
@@ -99,8 +102,10 @@ module Roject
 		# Author:  Anshul Kharbanda
 		# Created: 7 - 13 - 2016
 		class YAMLParser < Parser
-			# The extensions supported for YAML
-			@@extensions = [".yaml", ".yml"]
+			# Returns the extensions supported for YAML
+			# 
+			# Return: the extensions supported for YAML
+			def self.extensions; [".yaml", ".yml"]; end
 
 			# Parses the given yaml text into a hash
 			#

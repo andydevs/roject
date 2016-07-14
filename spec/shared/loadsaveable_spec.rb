@@ -32,6 +32,7 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 		@modded_hash = { name: "superproject", author: "Anshul Kharbanda" }
 		@pjson_name = "#{@dir}/foo.json"
 		@pyaml_name = "#{@dir}/foo.yaml"
+		@pyml_name = "#{@dir}/foo.yml"
 		@phony_name = "#{@dir}/foo.bar"
 	end
 
@@ -89,6 +90,14 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 			end
 		end
 
+		context "with a .yml filename given" do
+			it "returns a new #{loadsaveable_class.name} from the yml file with the given filename" do
+				project = loadsaveable_class.load(@pyml_name)
+				expect(project).to be_an_instance_of loadsaveable_class
+				expect(project.hash).to eql read_yaml(@pyml_name)
+			end
+		end
+
 		#-----------------------------UNSUPPORTED-----------------------------
 
 		context "with an unsupported file extension given" do
@@ -129,6 +138,13 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 			end
 		end
 
+		context "with a .yml filename given" do
+			it "saves the project to the given filename in yml format" do
+				@project.save @pyml_name
+				expect(read_yaml(@pyml_name)).to eql @modded_hash
+			end
+		end
+
 		#-----------------------------UNSUPPORTED-----------------------------
 
 		context "with an unsupported file extension given" do
@@ -142,6 +158,7 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 		after :all do 
 			write_json @pjson_name, @default_hash
 			write_yaml @pyaml_name, @default_hash
+			write_yaml @pyml_name,  @default_hash
 		end
 	end
 
@@ -220,6 +237,36 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 				end
 			end
 
+			context "when file is .yml" do
+				# Declare project local variable
+				project = nil
+
+				it "loads a #{loadsaveable_class.name} from the yml file with the given filename (calling #load)" do
+					# Declare modded_hash local variable
+					mhash = @modded_hash
+
+					# Open project in a block
+					expect { loadsaveable_class.open @pyml_name do
+						# Set project to instance
+						project = self
+
+						# Modify project
+						initialize mhash
+					end }.not_to raise_error
+				end
+
+				it "evaluates the given block in the context of the loaded #{loadsaveable_class.name}" do
+					# Check if project was actually self, and it was successfuly modified
+					expect(project).to be_an_instance_of loadsaveable_class
+					expect(project.hash).to eql @modded_hash
+				end
+
+				it "saves the #{loadsaveable_class.name} when the block ends" do
+					# Check if the modded project was saved
+					expect(read_yaml(@pyml_name)).to eql @modded_hash
+				end
+			end
+
 			#-----------------------------UNSUPPORTED-----------------------------
 
 			context "when filetype is unsupported" do
@@ -231,6 +278,7 @@ shared_examples "loadsaveable" do |loadsaveable_class|
 			after :all do 
 				write_json @pjson_name, @default_hash
 				write_yaml @pyaml_name, @default_hash
+				write_yaml @pyml_name,  @default_hash
 			end
 		end
 
