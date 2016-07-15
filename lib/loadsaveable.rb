@@ -64,6 +64,18 @@ module Roject
 			def load filename
 				self.new Parsers.get(filename).parse IO.read filename
 			end
+
+			# Defines getter methods for the given names
+			# each retrieve the value of name in the hash 
+			#
+			# Parameter: names - the names to define
+			def get *names
+				unless names.empty?
+					names.each do |name|
+						define_method(name) { hash[name] }
+					end
+				end
+			end
 		end
 
 		# Methods that are implemented at the instance level

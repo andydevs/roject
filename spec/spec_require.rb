@@ -18,9 +18,7 @@ require "yaml"
 # Required files for spec
 require_relative "../lib/parsers"
 require_relative "../lib/project"
-
-# Spec shared examples
-require_relative "shared/loadsaveable_spec"
+require_relative "../lib/loadsaveable"
 
 #-----------------------HASHMOD METHODS------------------------
 
