@@ -337,7 +337,6 @@ describe Roject::LoadSaveable do
 	# Parameter: name - the name to define
 	describe '::get' do
 		before :all do
-			@keys = :name, :author, :value
 			@hash = { name: "foo", author: "bar", value: "baz" }
 		end
 
