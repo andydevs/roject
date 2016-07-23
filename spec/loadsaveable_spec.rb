@@ -34,11 +34,12 @@ describe Roject::LoadSaveable do
 			include Roject::LoadSaveable
 			def initialize(hash={}); @foo = hash; end
 			def hash; @foo; end
+			get :name, :author
 		end
 
 		@dir          = "exp/loadsaveable"
-		@default_hash = { name: "project" }
-		@modded_hash  = { name: "superproject", author: "Anshul Kharbanda" }
+		@default_hash = { name: "project", author: "Anshul Kharbanda" }
+		@modded_hash  = { name: "superproject", author: "Super Anshul Kharbanda" }
 		@pjson_name   = "#{@dir}/foo.json"
 		@pyaml_name   = "#{@dir}/foo.yaml"
 		@pyml_name    = "#{@dir}/foo.yml"
@@ -353,6 +354,38 @@ describe Roject::LoadSaveable do
 
 			@hash.each_pair do |key, value| 
 				expect(@instance.send(key)).to eql value
+			end
+		end
+	end
+
+	# Describing LoadSaveable::attributes
+	#
+	# Returns all attributes that are
+	# part of the LoadSaveable implementation
+	#
+	# Return: all attributes that are
+	# 		  part of the LoadSaveable 
+	# 		  implementation
+	describe '::attributes' do
+		context 'with attributes set' do
+			it 'returns all attributes that are part of the loadsaveable implementation' do
+				hash = @default_hash
+				instance = LoadSaveableClass.new hash
+
+				LoadSaveableClass.attributes.each do |attribute|
+					expect(instance.send(attribute)).to eql hash[attribute]
+				end
+			end
+		end
+
+		context 'with no attributes set' do
+			it 'returns an empty array' do
+				class LoadSaveableClass2
+					include Roject::LoadSaveable
+					def initialize(hash={}); @bar = hash; end
+					def hash; @bar; end
+				end
+				expect(LoadSaveableClass2.attributes).to be_empty
 			end
 		end
 	end

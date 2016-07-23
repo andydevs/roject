@@ -1,0 +1,9 @@
+---
+project_name: Dre
+author: Anshul Kharbanda
+created: 7 - 23 - 2016
+short_description: Forgot about Dre.
+long_description: Nowadays everybody wanna talk like they got somethin' to say but nothin' comes out when they move their lips just a bunch of gibberish and they all acting like they forgot about Dre.
+directories:
+  - include
+  - src

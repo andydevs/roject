@@ -37,8 +37,6 @@ module Roject
 		# Returns a hash of the data contained in the project
 		#
 		# Return: a hash of the data contained in the project
-		def hash
-			@project
-		end
+		def hash; @project; end
 	end
 end

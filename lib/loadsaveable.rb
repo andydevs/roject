@@ -72,9 +72,24 @@ module Roject
 			def get *names
 				unless names.empty?
 					names.each do |name|
+						#add name to attributes list
+						@attributes ||= []
+						@attributes << name
+
+						# define method name
 						define_method(name) { hash[name] }
 					end
 				end
+			end
+
+			# Returns all attributes that are
+			# part of the LoadSaveable implementation
+			#
+			# Return: all attributes that are
+			# 		  part of the LoadSaveable 
+			# 		  implementation
+			def attributes
+				@attributes or []
 			end
 		end
 
