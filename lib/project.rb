@@ -58,6 +58,9 @@ module Roject
 			:filetypes
 
 		# Creates a file of the given type with the given args
+		#
+		# Parameter: type - the type of the file to make
+		# Parameter: args - the args to pass to the file
 		def create type, args
 			@filetypes[type].make @project.merge args
 		end

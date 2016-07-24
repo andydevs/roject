@@ -21,11 +21,18 @@ require_relative "spec_require"
 # Author:  Anshul Kharbanda
 # Created: 7 - 8 - 2016
 describe Roject::Project do
+	# Do before
 	before :all do
 	  Dir.chdir "exp/project"
 	  @project = Roject::Project.load "project.yaml"
 	end
 
+	# Describe Roject#create
+	#
+	# Creates a file of the given type with the given args
+	#
+	# Parameter: type - the type of the file to make
+	# Parameter: args - the args to pass to the file
 	describe '#create' do
 		before :all do
 			@type    = :header
@@ -41,6 +48,7 @@ describe Roject::Project do
 		end
 	end
 
+	# Do afterwards
 	after :all do
 		FileUtils.rmtree(@project.directories)
 	end
