@@ -21,5 +21,27 @@ require_relative "spec_require"
 # Author:  Anshul Kharbanda
 # Created: 7 - 8 - 2016
 describe Roject::Project do
-	
+	before :all do
+	  Dir.chdir "exp/project"
+	  @project = Roject::Project.load "project.yaml"
+	end
+
+	describe '#create' do
+		before :all do
+			@type    = :header
+			@path    = "path/to/file"
+			@outpath = "include/#{@project.project_name}/#{@path}.h"
+			@outtext = IO.read("output/testheader.h")
+		end
+
+		it 'creates a file of the given type with the given arguments' do
+			@project.create @type, path: @path, header_id: @project.c_header_id(@path)
+			expect(File).to be_file(@outpath)
+			expect(IO.read(@outpath)).to eql @outtext
+		end
+	end
+
+	after :all do
+		FileUtils.rmtree(@project.directories)
+	end
 end

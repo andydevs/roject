@@ -28,6 +28,6 @@ module Roject
 		# Parameters: path - the path being converted
 		#
 		# Return: a c header id generated from the given path
-		def self.c_header_id(path); "_#{path.upcase.gsub(/\/|\\/, "_")}_H_"; end
+		def c_header_id(path); "_#{path.upcase.gsub(/\/|\\/, "_")}_H_"; end
 	end
 end

@@ -7,3 +7,12 @@ long_description: Nowadays everybody wanna talk like they got somethin' to say b
 directories:
   - include
   - src
+filetypes:
+  header:
+    path: include/@(project_name)/@(path)
+    template: templates/header.general
+    extension: h
+  source:
+    path: src/@(path)
+    template: templates/source.general
+    extension: cpp
