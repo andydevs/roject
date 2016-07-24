@@ -14,7 +14,7 @@ Created: 7 - 8 - 2016
 # Other modules
 require_relative "loadsaveable"
 require_relative "helpers"
-require_relative "filetype"
+require_relative "maker"
 
 # Roject is a programming project manager written in Ruby.
 #
@@ -30,23 +30,18 @@ module Roject
 		include LoadSaveable
 		include Helpers
 
-		# The key that stores filetypes
-		FILETYPES_KEY = :filetypes
-
 		# Creates a Project with the given data hash
 		#
 		# Parameter: hash - the data to be contained in the project
 		def initialize hash={}
-			@project = hash.each_pair.select{|k,v| k != FILETYPES_KEY}.to_h
-			@filetypes = hash[FILETYPES_KEY].each_pair.collect{|k,v|[k, FileType.new(v)]}.to_h
+			@project = hash
+			@makers = {}
 		end
 
 		# Returns a hash of the data contained in the project
 		#
 		# Return: a hash of the data contained in the project
-		def hash
-			@project.merge(@filetypes.each_pair.collect{|k,v|[k,v.hash]}.to_h)
-		end
+		def hash; @project; end
 
 		# Attributes part of Project
 		get :project_name,
@@ -54,15 +49,38 @@ module Roject
 			:created,
 			:short_description,
 			:long_description,
-			:directories,
-			:filetypes
+			:directories
 
-		# Creates a file of the given type with the given args
+		# Loads the makers in the file with the given filename
 		#
-		# Parameter: type - the type of the file to make
+		# Parameter: filename - the name of the file to read
+		def load_makers(filename); instance_eval(IO.read(filename)); end
+
+		# Runs the maker of the given name with the given args
+		#
+		# Parameter: name - the name of the maker to run
 		# Parameter: args - the args to pass to the file
-		def create type, args
-			@filetypes[type].make @project.merge args
+		def make name, args
+			@makers[name].make(self, args)
+		end
+
+		# Creates a file maker with the given name and hash
+		#
+		# Parameter: name - the name of the maker
+		# Parameter: hash - the hash arguments of the maker
+		def file name, hash
+			@makers[name] = FileMaker.new(hash)
+		end
+
+		# Adds the recipie specified by the given name and block
+		# to the makers table
+		#
+		# Parameter: name - the name of the recipie
+		# Parameter: block - the recipie block
+		#
+		# Throw: RuntimeError - if the name is already defined as a filetype
+		def task name, &block
+			@makers[name] = TaskMaker.new &block
 		end
 	end
 end

@@ -11,7 +11,7 @@ Created: 7 - 8 - 2016
 
 =end
 
-# General templating gem
+# Libraries
 require "general"
 require "fileutils"
 
@@ -20,15 +20,34 @@ require "fileutils"
 # Author:  Anshul Kharbanda
 # Created: 7 - 8 - 2016
 module Roject
-	# A template for files in a Project
+	# Runs a task with the given arguments
+	#
+	# Author:  Anshul Kharbanda
+	# Created: 7 - 23 - 2016
+	class TaskMaker
+		# Initializes a TaskMaker with the given block
+		#
+		# Parameter: &block - the block to run on make
+		def initialize(&block); @block = block; end
+
+		# Runs the task with the given arguments
+		#
+		# Parameter: project - the project running the task
+		# Parameter: args    - the args being used to run the task
+		def make project, args
+			project.instance_exec project.hash.merge(args), &@block
+		end
+	end
+
+	# Creates files according to the given credentials
 	#
 	# Author:  Anshul Kharbanda
 	# Created: 7 - 21 - 2016
-	class FileType
+	class FileMaker
 		# Read extension, directory, and template
 		attr :extension, :directory, :template
 
-		# Initializes a FileType from the given hash
+		# Initializes a FileMaker from the given hash
 		#
 		# Parameter: hash - the hash to parse
 		def initialize hash
@@ -37,10 +56,14 @@ module Roject
 			@extension = hash[:extension]
 		end
 
-		# Makes a file of this FileType with the given args
+		# Creates a file of the filetype with the given args
 		#
-		# Parameter: args - the args to pass to create
-		def make args
+		# Parameter: project - the project running the task
+		# Parameter: args    - the args being used to create the file
+		def make project, args
+			# merge args with project
+			args.merge! project.hash
+
 			# Get path
 			path = "#{@path.apply(args)}.#{@extension}"
 
@@ -50,15 +73,6 @@ module Roject
 
 			# Write template to path
 			@template.write(path, args)
-		end
-
-		# Returns a hash of the data stored in the FileType
-		#
-		# Return: a hash of the data stored in the FileType
-		def hash
-			{ path: @path.to_s,
-			 template: @template.source,
-			 extension: @extension }
 		end
 	end
 end

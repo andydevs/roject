@@ -27,29 +27,61 @@ describe Roject::Project do
 	  @project = Roject::Project.load "project.yaml"
 	end
 
-	# Describe Roject#create
+	# Describe Roject::Project#load_recipies
+	# 
+	# Loads the recipies in the file with the given filename
 	#
-	# Creates a file of the given type with the given args
-	#
-	# Parameter: type - the type of the file to make
-	# Parameter: args - the args to pass to the file
-	describe '#create' do
-		before :all do
-			@type    = :header
-			@path    = "path/to/file"
-			@outpath = "include/#{@project.project_name}/#{@path}.h"
-			@outtext = IO.read("output/testheader.h")
-		end
-
-		it 'creates a file of the given type with the given arguments' do
-			@project.create @type, path: @path, header_id: @project.c_header_id(@path)
-			expect(File).to be_file(@outpath)
-			expect(IO.read(@outpath)).to eql @outtext
+	# Parameter: filename - the name of the file to read
+	describe '#load_recipies' do
+		it 'reads a recipies file and evaluates it in the context of the Project' do
+			expect { @project.load_makers("makers.rb") }.not_to raise_error
 		end
 	end
 
-	# Do afterwards
-	after :all do
-		FileUtils.rmtree(@project.directories)
+	# Describe Roject::Project#make
+	#
+	# Runs the maker of the given name with the given args
+	#
+	# Parameter: name - the name of the maker to run
+	# Parameter: args - the args to pass to the file
+	describe '#make' do
+		before :all do
+			@path = "path/to/file"
+
+			@header = {
+				type: :header,
+				out: "include/#{@project.project_name}/#{@path}.h",
+				text: IO.read("output/testheader.h")
+			}
+
+			@source = {
+				type: :source,
+				out: "src/#{@path}.cpp",
+				text: IO.read("output/testsource.cpp")
+			}
+		end
+
+		# Creating filetype
+		context 'with a file maker name given' do
+			it 'creates a file of the given type with the given arguments' do
+				@project.make @header[:type], path: @path, header_id: @project.c_header_id(@path)
+				expect(File).to be_file(@header[:out])
+				expect(IO.read(@header[:out])).to eql @header[:text]
+			end
+		end
+
+		# Performing task
+		context 'with a task maker name given' do
+			it 'performs the task of the given name with the given arguments' do
+				@project.make :module, path: @path
+				[@header, @source].each do |file|
+					expect(File).to be_file(file[:out])
+					expect(IO.read(file[:out])).to eql file[:text]
+				end
+			end
+		end
+
+		# Do afterwards
+		after :each do FileUtils.rmtree(@project.directories) end
 	end
 end
