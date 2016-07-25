@@ -21,14 +21,17 @@ require_relative "../lib/roject"
 describe Roject::Project do
 	# Do before
 	before :all do
+		# Change to project
 		Dir.chdir "exp/project"
+
+		# Create base project
 		@project = Roject::Project.new
-		@config = Roject::Project::CONFIG_DEFAULT.merge({
+		@foocfg = Roject::Project::CONFIG_DEFAULT.merge({
 			project_name: 	   "Foo",
 			author: 	  	   "Anshul Kharbanda",
 			created: 		   "7 - 24 - 2016",
 			short_description: "Foo bar",
-			long_description:  "Foo bar baz ju lar laz nu kar kaz"
+			long_description:  "Foo bar baz joo jar jaz noo kar kaz"
 		})
 	end
 
@@ -49,37 +52,104 @@ describe Roject::Project do
 
 		context 'with hash given' do
 			it 'configures the Project with the given hash' do
-				expect{@project.config(@config)}.not_to raise_error
-				expect(@project.config).to eql @config
+				expect{@project.config(@foocfg)}.not_to raise_error
+				expect(@project.config).to eql @foocfg
 			end
 		end
 	end
 
-	# Describe Roject::Project::load
+	# Describe Roject::Project loading system
 	#
-	# Loads a Project from the project file with the given filename
-	# 
-	# Parameter: filename - the name of the file to parse
+	# The system of loading and reloading from a file
 	#
-	# Return: Project loaded from the file
-	describe '::load' do
-		context 'with a filename given' do
-			it 'loads a project from the given filename' do
-				expect{@project = Roject::Project.load("project.rb")}.not_to raise_error
-				expect(@project).to be_an_instance_of Roject::Project
+	# Author:  Anshul Kharbanda
+	# Created: 7 - 25 - 2016
+	describe 'loading' do
+		# Describe Roject::Project::load
+		#
+		# Loads a Project from the project file with the given filename
+		# 
+		# Parameter: filename - the name of the file to parse
+		#
+		# Return: Project loaded from the file
+		describe '::load' do
+			# Check when filename is given
+			context 'with a filename given' do
+				it 'loads a project from the given filename' do
+					# Test loading foobar.rb file
+					expect{@project = Roject::Project.load("foobar.rb")}.not_to raise_error
+					expect(@project).to be_an_instance_of Roject::Project
+					expect(@project.config).to eql @foocfg
+				end
+			end
+
+			# Check when filename is not given
+			context 'with no filename given' do
+				it 'loads a project from the default filename' do
+					# Test loading default file
+					expect{@project = Roject::Project.load}.not_to raise_error
+					expect(@project).to be_an_instance_of Roject::Project
+				end
 			end
 		end
 
-		context 'with no filename given' do
-			it 'loads a project from the default filename' do
-				expect{@project = Roject::Project.load}.not_to raise_error
-				expect(@project).to be_an_instance_of Roject::Project
+		# Describe Roject::Project::open
+		# 
+		# Alias for load if no block is given. Evaluates the given
+		# block in the context of the project if block is given
+		#
+		# Parameter: filename - the name of the file to parse
+		# 						(defaults to the default filename)
+		# Parameter: block    - the block to evaluate within the 
+		# 						context of the project
+		# 
+		# Return: Project loaded from the file
+		describe '::open' do
+			# Check for when block is given
+			context 'with a block given' do
+				it 'loads the project and evaluates it within the given block' do
+					project = nil
+					expect { Roject::Project.open { project = self } }.not_to raise_error
+					expect(project).to be_an_instance_of Roject::Project
+				end
+			end
+
+			# Check for when no block is given
+			context 'with no block given' do
+				it 'loads the project' do
+					expect { @project = Roject::Project.open }.not_to raise_error
+					expect(@project).to be_an_instance_of Roject::Project
+				end
 			end
 		end
 
-		after :all do
-			@project.instance_variable_set :@makers, {}
+		# Describe Roject::Project#reload
+		#
+		# Reloads the project with the file with the given filename
+		# 
+		# Parameter: filename - the name of the file to parse
+		# 						(defaults to the default filename)
+		describe '#reload' do
+			context 'with a filename given' do
+				it 'loads the given filename into the project' do
+					# Test loading foobar.rb file
+					expect{@project.reload("foobar.rb")}.not_to raise_error
+					expect(@project).to be_an_instance_of Roject::Project
+					expect(@project.config).to eql @foocfg
+				end
+			end
+
+			context 'with no filename given' do
+				it 'loads the default filename into the project' do
+					# Test loading default file
+					expect{@project.reload}.not_to raise_error
+					expect(@project).to be_an_instance_of Roject::Project
+				end
+			end
 		end
+
+		# Delete makers
+		after :all do @project.instance_variable_set :@makers, {} end
 	end
 
 	# Describe Roject::Project makers
@@ -218,5 +288,6 @@ describe Roject::Project do
 		end
 	end
 
+	# Change back to root
 	after :all do Dir.chdir "../.." end
 end

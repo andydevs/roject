@@ -25,7 +25,7 @@ module Roject
 	# Author:  Anshul Kharbanda
 	# Created: 7 - 10 - 2016
 	class Project
-		# Includes
+		# Helper methods for creating and manipulating projects
 		include Helpers
 
 		# Default filename
@@ -43,6 +43,23 @@ module Roject
 			}
 		}
 
+		#-----------------------------------CLASS CONFIG-----------------------------------
+
+		# Alias for load if no block is given. Evaluates the given
+		# block in the context of the project if block is given
+		#
+		# Parameter: filename - the name of the file to parse
+		# 						(defaults to the default filename)
+		# Parameter: block    - the block to evaluate within the 
+		# 						context of the project
+		# 
+		# Return: Project loaded from the file
+		def self.open filename=FILENAME_DEFAULT, &block
+			project = self.load(filename)
+			project.instance_eval(&block) unless block.nil?
+			return project
+		end
+
 		# Loads a Project from the project file with the given filename
 		# 
 		# Parameter: filename - the name of the file to parse
@@ -50,16 +67,22 @@ module Roject
 		#
 		# Return: Project loaded from the file
 		def self.load filename=FILENAME_DEFAULT
-			project = Roject::Project.new
+			project = self.new
 			project.instance_eval(IO.read(filename))
 			return project
 		end
 
-		#----------------------------------INIT AND CONFIG----------------------------------
+		#----------------------------------INSTANCE CONFIG----------------------------------
 
 		# Called upon the initialization of a Project
 		# Creates config and makers hashes
 		def initialize; @config = CONFIG_DEFAULT; @makers = {}; end
+
+		# Reloads the project with the file with the given filename
+		# 
+		# Parameter: filename - the name of the file to parse
+		# 						(defaults to the default filename)
+		def reload(filename=FILENAME_DEFAULT); initialize and instance_eval(IO.read(filename)); end
 
 		# If a hash is given, sets the Project configuration to the hash.
 		# Else, returns the configuration of the Project.
