@@ -8,8 +8,6 @@ long_description: "Nowadays everybody wanna talk like" \
 " when they move their lips just a bunch of gibberish" \
 " and they all acting like they forgot about Dre."
 
-=begin
-
 #---------------------------MAKERS---------------------------
 
 # Header file
@@ -33,5 +31,3 @@ task :module do |args|
 	make :header, args
 	make :source, args
 end
-
-=end

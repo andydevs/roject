@@ -10,9 +10,7 @@ Author:  Anshul Kharbanda
 Created: 7 - 8 - 2016
 
 =end
-
-# Spec require
-require_relative "spec_require"
+require_relative "../lib/roject"
 
 # Describing Roject::Project
 #
@@ -68,6 +66,10 @@ describe Roject::Project do
 		it 'loads a project from the given filename' do
 			expect{@project = Roject::Project.load "project.rb"}.not_to raise_error
 			expect(@project).to be_an_instance_of Roject::Project
+		end
+
+		after :all do
+			@project.instance_variable_set :@makers, {}
 		end
 	end
 
@@ -205,5 +207,9 @@ describe Roject::Project do
 			# Do afterwards
 			after :each do FileUtils.rmtree ["include", "src"] end
 		end
+	end
+
+	after :all do
+	  Dir.chdir "../.."
 	end
 end
