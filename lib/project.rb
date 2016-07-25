@@ -43,6 +43,17 @@ module Roject
 			}
 		}
 
+		# Check if a project file exists in the current directory
+		#
+		# Parameter: filename - the filename to check
+		# 						(defaults to the default filename)
+		# 
+		# Returns: true if the project file exists in the current 
+		# 		   directory
+		def self.exist? filename=FILENAME_DEFAULT
+			File.file?(FILENAME_DEFAULT)
+		end
+
 		#-----------------------------------CLASS CONFIG-----------------------------------
 
 		# Alias for load if no block is given. Evaluates the given

@@ -26,6 +26,9 @@ describe Roject::Project do
 
 		# Create base project
 		@project = Roject::Project.new
+
+		# Foobar file
+		@foofle = "foobar.rb"
 		@foocfg = Roject::Project::CONFIG_DEFAULT.merge({
 			project_name: 	   "Foo",
 			author: 	  	   "Anshul Kharbanda",
@@ -65,6 +68,29 @@ describe Roject::Project do
 	# Author:  Anshul Kharbanda
 	# Created: 7 - 25 - 2016
 	describe 'loading' do
+		# Describe Roject::Project::exist?
+		#
+		# Check if a project file exists in the current directory
+		#
+		# Parameter: filename - the filename to check
+		# 						(defaults to the default filename)
+		# 
+		# Returns: true if the project file exists in the current 
+		# 		   directory
+		describe '::exist?' do
+			context 'with a filename given' do
+				it 'checks if the given project filename exists in the current directory' do
+					expect(Roject::Project).to be_exist(@foofle)
+				end
+			end
+
+			context 'with no filename given' do
+				it 'checks if the default project filename exists in the current directory' do
+					expect(Roject::Project).to be_exist
+				end
+			end
+		end
+
 		# Describe Roject::Project::load
 		#
 		# Loads a Project from the project file with the given filename
@@ -77,7 +103,7 @@ describe Roject::Project do
 			context 'with a filename given' do
 				it 'loads a project from the given filename' do
 					# Test loading foobar.rb file
-					expect{@project = Roject::Project.load("foobar.rb")}.not_to raise_error
+					expect{@project = Roject::Project.load(@foofle)}.not_to raise_error
 					expect(@project).to be_an_instance_of Roject::Project
 					expect(@project.config).to eql @foocfg
 				end
