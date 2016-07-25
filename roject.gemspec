@@ -25,12 +25,12 @@ Gem::Specification.new do |spec|
 	spec.email       = "akanshul97@gmail.com"
 
 	# Dependencies
-	spec.add_dependency "general",   "~>1.3.0"
-	spec.add_dependency "json",      "~>1.8.3"
+	spec.add_dependency "general", ">= 1.3.0"
+	spec.add_dependency "json",    ">= 1.8.0"
 
 	# Development dependiencies
-	spec.add_development_dependency "rspec", "~>3.4.4"
-	spec.add_development_dependency "rake",  "~>11.1.2"
+	spec.add_development_dependency "rspec", ">= 3.4.4"
+	spec.add_development_dependency "rake",  ">= 11.1.2"
 
 	#Files
 	spec.files = Dir.glob("lib/**/*.*") \
