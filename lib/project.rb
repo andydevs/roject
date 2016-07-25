@@ -12,9 +12,8 @@ Created: 7 - 8 - 2016
 =end
 
 # Other modules
-require_relative "loadsaveable"
 require_relative "helpers"
-require_relative "maker"
+require_relative "makers"
 
 # Roject is a programming project manager written in Ruby.
 #
@@ -27,60 +26,77 @@ module Roject
 	# Created: 7 - 10 - 2016
 	class Project
 		# Includes
-		include LoadSaveable
 		include Helpers
 
-		# Creates a Project with the given data hash
+		# Default configuration
+		CONFIG_DEFAULT = {
+			project_name: "[project-name]",
+			author: "[author]",
+			created: "[created]",
+			short_description: "[short_description]",
+			long_description: "[long_description]",
+			directory: {
+				templates: "_templates"
+			}
+		}
+
+		# Loads a Project from the project file with the given filename
+		# 
+		# Parameter: filename - the name of the file to parse
 		#
-		# Parameter: hash - the data to be contained in the project
-		def initialize hash={}
-			@project = hash
-			@makers = {}
+		# Return: Project loaded from the file
+		def self.load filename
+			project = Roject::Project.new
+			project.instance_eval(IO.read(filename))
+			return project
 		end
 
-		# Returns a hash of the data contained in the project
-		#
-		# Return: a hash of the data contained in the project
-		def hash; @project; end
+		#----------------------------------INIT AND CONFIG----------------------------------
 
-		# Attributes part of Project
-		get :project_name,
-			:author,
-			:created,
-			:short_description,
-			:long_description,
-			:directories
+		# Called upon the initialization of a Project
+		# Creates config and makers hashes
+		def initialize; @config = CONFIG_DEFAULT; @makers = {}; end
 
-		# Loads the makers in the file with the given filename
+		# If a hash is given, sets the Project configuration to the hash.
+		# Else, returns the configuration of the Project.
 		#
-		# Parameter: filename - the name of the file to read
-		def load_makers(filename); instance_eval(IO.read(filename)); end
+		# Parameter: hash - the hash to configure the project with
+		#
+		# Return: the configuration of the Project
+		def config(hash=nil); hash and @config.merge!(hash) or return @config; end
+
+		#-------------------------------------MAKERS-----------------------------------------
 
 		# Runs the maker of the given name with the given args
 		#
 		# Parameter: name - the name of the maker to run
 		# Parameter: args - the args to pass to the file
-		def make name, args
-			@makers[name].make(self, args)
+		def make(name, args)
+			if @makers.has_key? name
+				@makers[name].make self, args
+			else
+				raise RuntimeError, "Undefied maker #{name}"
+			end
 		end
 
 		# Creates a file maker with the given name and hash
 		#
 		# Parameter: name - the name of the maker
 		# Parameter: hash - the hash arguments of the maker
-		def file name, hash
-			@makers[name] = FileMaker.new(hash)
+		def file(name, hash)
+			unless @makers.has_key? name
+				@makers[name] = FileMaker.new self, hash
+			end
 		end
 
-		# Adds the recipie specified by the given name and block
-		# to the makers table
+		# Creates a task maker with the given name and block
 		#
 		# Parameter: name - the name of the recipie
 		# Parameter: block - the recipie block
-		#
-		# Throw: RuntimeError - if the name is already defined as a filetype
-		def task name, &block
-			@makers[name] = TaskMaker.new &block
+		def task(name, &block);
+			unless @makers.has_key? name
+				@makers[name] = TaskMaker.new &block
+			end
 		end
 	end
 end

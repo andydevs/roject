@@ -35,7 +35,7 @@ module Roject
 		# Parameter: project - the project running the task
 		# Parameter: args    - the args being used to run the task
 		def make project, args
-			project.instance_exec project.hash.merge(args), &@block
+			project.instance_exec project.config.merge(args), &@block
 		end
 	end
 
@@ -50,9 +50,9 @@ module Roject
 		# Initializes a FileMaker from the given hash
 		#
 		# Parameter: hash - the hash to parse
-		def initialize hash
+		def initialize project, hash
 			@path = General::GTemplate.new hash[:path]
-			@template = General::GIO.load hash[:template]
+			@template = General::GIO.load "#{project.config[:directory][:templates]}/#{hash[:template]}"
 			@extension = hash[:extension]
 		end
 
@@ -62,7 +62,7 @@ module Roject
 		# Parameter: args    - the args being used to create the file
 		def make project, args
 			# merge args with project
-			args.merge! project.hash
+			args.merge! project.config
 
 			# Get path
 			path = "#{@path.apply(args)}.#{@extension}"
