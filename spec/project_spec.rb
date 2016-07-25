@@ -26,7 +26,7 @@ describe Roject::Project do
 		@config = Roject::Project::CONFIG_DEFAULT.merge({
 			project_name: 	   "Foo",
 			author: 	  	   "Anshul Kharbanda",
-			created: 		   "7 - 23 - 2016",
+			created: 		   "7 - 24 - 2016",
 			short_description: "Foo bar",
 			long_description:  "Foo bar baz ju lar laz nu kar kaz"
 		})
@@ -36,9 +36,9 @@ describe Roject::Project do
 	#
 	# If a hash is given, sets the Project configuration to the hash.
 	# Else, returns the configuration of the Project.
-	#
+	# 
 	# Parameter: hash - the hash to configure the project with
-	#
+	# 
 	# Return: the configuration of the Project
 	describe '#config' do
 		context 'with no arguments given' do
@@ -63,9 +63,18 @@ describe Roject::Project do
 	#
 	# Return: Project loaded from the file
 	describe '::load' do
-		it 'loads a project from the given filename' do
-			expect{@project = Roject::Project.load "project.rb"}.not_to raise_error
-			expect(@project).to be_an_instance_of Roject::Project
+		context 'with a filename given' do
+			it 'loads a project from the given filename' do
+				expect{@project = Roject::Project.load("project.rb")}.not_to raise_error
+				expect(@project).to be_an_instance_of Roject::Project
+			end
+		end
+
+		context 'with no filename given' do
+			it 'loads a project from the default filename' do
+				expect{@project = Roject::Project.load}.not_to raise_error
+				expect(@project).to be_an_instance_of Roject::Project
+			end
 		end
 
 		after :all do
@@ -83,34 +92,34 @@ describe Roject::Project do
 		# Before all
 		before :all do
 			@path = "path/to/file"
+			@config = @project.config
 
 			# ----------------------FILE INFO----------------------
 
 			@header = {
-				name: :header,
-				path: "include/@(project_name)/@(path)",
-				template: "header.general",
+				name:      :header,
+				path:      "include/@(project_name)/@(path)",
+				template:  "header.general",
 				extension: "h",
-				out: "include/#{@project.config[:project_name]}/#{@path}.h",
-				text: IO.read("output/testheader.h")
+				out:       "include/#{@config[:project_name]}/#{@path}.h",
+				text:      IO.read("output/testheader.h")
 			}
 
 			@source = {
-				name: :source,
-				path: "src/@(path)",
-				template: "source.general",
+				name:      :source,
+				path:      "src/@(path)",
+				template:  "source.general",
 				extension: "cpp",
-				out: "src/#{@path}.cpp",
-				text: IO.read("output/testsource.cpp")
+				out:       "src/#{@path}.cpp",
+				text:      IO.read("output/testsource.cpp")
 			}
 
 			# ----------------------TASK INFO----------------------
 
 			@module = {
-				name: :module,
+				name:  :module,
 				block: Proc.new do |args|
 					args[:header_id] = c_header_id(args[:path])
-
 					make :header, args
 					make :source, args
 				end
@@ -140,7 +149,7 @@ describe Roject::Project do
 
 					# Template
 					expect(fmkr.instance_variable_get(:@template)).to be_an_instance_of General::GIO
-					expect(fmkr.instance_variable_get(:@template).source).to eql "#{@project.config[:directory][:templates]}/#{ft[:template]}"
+					expect(fmkr.instance_variable_get(:@template).source).to eql "#{@config[:directory][:templates]}/#{ft[:template]}"
 
 					# Extension
 					expect(fmkr.instance_variable_get(:@extension)).to eql ft[:extension]
@@ -209,7 +218,5 @@ describe Roject::Project do
 		end
 	end
 
-	after :all do
-	  Dir.chdir "../.."
-	end
+	after :all do Dir.chdir "../.." end
 end

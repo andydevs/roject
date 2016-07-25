@@ -28,6 +28,9 @@ module Roject
 		# Includes
 		include Helpers
 
+		# Default filename
+		FILENAME_DEFAULT = "project.rb"
+
 		# Default configuration
 		CONFIG_DEFAULT = {
 			project_name: "[project-name]",
@@ -43,9 +46,10 @@ module Roject
 		# Loads a Project from the project file with the given filename
 		# 
 		# Parameter: filename - the name of the file to parse
+		# 						(defaults to the default filename)
 		#
 		# Return: Project loaded from the file
-		def self.load filename
+		def self.load filename=FILENAME_DEFAULT
 			project = Roject::Project.new
 			project.instance_eval(IO.read(filename))
 			return project

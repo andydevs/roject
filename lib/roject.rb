@@ -20,16 +20,5 @@ require_relative "project"
 # Created: 7 - 8 - 2016
 module Roject
 	# The Version of Roject
-	VERSION = "0.6.0"
-
-	# Returns true if the current directory has a project script
-	#
-	# Return: true if the current directory has a project script
-	def self.project?; File.file?("project.rb"); end
-
-	# Runs the maker in the current project with the given name and the given args
-	#
-	# Parameter: name - the name of the maker
-	# Parameter: args - the args to pass to the maker
-	def self.make(name, args); Project.load("project.rb").make(name, args); end
+	VERSION = "0.7.0"
 end
