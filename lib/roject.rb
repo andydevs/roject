@@ -20,5 +20,5 @@ require_relative "project"
 # Created: 7 - 8 - 2016
 module Roject
 	# The Version of Roject
-	VERSION = "0.7.1"
+	VERSION = "1.0.0"
 end

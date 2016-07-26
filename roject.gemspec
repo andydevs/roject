@@ -36,5 +36,9 @@ Gem::Specification.new do |spec|
 	spec.files = Dir.glob("lib/**/*.*") \
 			   + Dir.glob("spec/**/*.*") \
 			   + Dir.glob("exp/**/*.*") \
+			   + Dir.glob("bin/**/*.*") \
 			   + ["Rakefile", "LICENSE", "README.md"]
+
+	# Executables
+	spec.executables << "bin/roject"
 end

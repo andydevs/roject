@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+
+=begin 
+
+Program: Roject
+
+Roject is a programming project manager written in Ruby.
+With Roject, you can create and edit projects based on templates
+using simple commands without a heavy IDE.
+
+Author:  Anshul Kharbanda
+Created: 7 - 8 - 2016
+
+=end
+
+# Require roject library
+require_relative "../lib/roject"
+
+# Regular expression for parsing arguments
+ARGREGEX = /(?<key>\w+):(?<value>.+)/
+
+# Parses command line arguments into a task
+# and hash of arguments
+# 
+# Parameter: args - the command line arguments
+# 
+# Return: parsed task and hash of arguments
+def parse_arguments args
+	makr = args[0].to_sym
+	argh = {}
+	args[1..-1].each do |arg|
+		ARGREGEX.match(arg) do |match| 
+			argh[match[:key].to_sym] = match[:value]
+		end
+	end
+	return [makr, argh]
+end
+
+# If working dir is project
+if Roject::Project.exist?
+
+	# Parse command line arguments
+	task, args = parse_arguments ARGV
+
+	# Print info
+	puts "making #{task}", "args #{args}"
+
+	# Make maker and args
+	Roject::Project.open { make task, args }
+
+# Else raise error
+else
+	raise IOError, "Could not locate a project script in current directory: #{Dir.getwd}"
+end
