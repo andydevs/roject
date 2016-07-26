@@ -42,7 +42,7 @@ task :module do |args|
 end
 ```
 
-In this script, the project information (project_name, author, etc.) is configured using the `config` method, which is given a hash of the project info. After which, project makers (automated tasks that can be called) are defined using the `file` and `task` methods. The `file` method creates a file maker which makes files according to the information given using the command line arguments. The `task` method creates a task maker which executes the given block with the command line arguments.
+In this script, the project information (project_name, author, etc.) is configured using the `config` method, which is given a hash of the project info. After which, project makers (automated tasks that can be called via the command line) are defined using the `file` and `task` methods. The `file` method creates a file maker which makes files according to the information given using the command line arguments. The `task` method creates a task maker which executes the given block with the command line arguments.
 
 ### Config
 
