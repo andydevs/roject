@@ -14,6 +14,12 @@ Created: 7 - 8 - 2016
 # Require roject library
 require_relative "lib/roject"
 
+# Gemspec for Roject
+#
+# Roject is a programming project manager written in Ruby.
+#
+# Author:  Anshul Kharbanda
+# Created: 7 - 8 - 2016
 Gem::Specification.new do |spec|
 	# Project info
 	spec.name        = "roject"
