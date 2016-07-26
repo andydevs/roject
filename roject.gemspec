@@ -11,9 +11,11 @@ Created: 7 - 8 - 2016
 
 =end
 
+# Require roject library
 require_relative "lib/roject"
 
 Gem::Specification.new do |spec|
+	# Project info
 	spec.name        = "roject"
 	spec.version     = Roject::VERSION
 	spec.license     = "GPL-3.0"
