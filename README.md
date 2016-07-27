@@ -76,7 +76,21 @@ This command should be passed a hash of project info keys, of which are the foll
 | short_description | a short description of the project |
 | long_description  | a long description of the project  |
 
-There are also optional options to set. The `directory` key contains a hash of essential directories. The `templates` directory determines where project templates are located, and defaults to `_templates`. Of course, this can also be changed to your liking.
+There are also optional options to set. The `directory` key is a hash of essential directories. The `templates` key within the `directory` hash determines where project templates are located, and defaults to `_templates`. Of course, this can also be changed to your liking.
+
+```ruby
+config project_name: "Dre",
+author: "Anshul Kharbanda",
+created: "7 - 23 - 2016",
+short_description: "Forgot about Dre.",
+long_description: "Nowadays everybody wanna talk like" \
+" they got somethin' to say but nothin' comes out" \
+" when they move their lips just a bunch of gibberish" \
+" and they all acting like they forgot about Dre.",
+directory: {
+	templates: "new-templates-dir"
+}
+```
 
 ### Makers
 
