@@ -26,13 +26,17 @@ ARGREGEX = /(?<key>\w+):(?<value>.+)/
 # 
 # Return: parsed task and hash of arguments
 def parse_arguments args
+	# First argument is the maker
 	makr = args[0].to_sym
-	argh = {}
-	args[1..-1].each do |arg|
+
+	# Parse remaining arguments
+	argh = {}; args[1..-1].each do |arg|
 		ARGREGEX.match(arg) do |match| 
 			argh[match[:key].to_sym] = match[:value]
 		end
 	end
+
+	# Return maker and args
 	return [makr, argh]
 end
 
