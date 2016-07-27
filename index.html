@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Roject by andydevs</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Roject</h1>
+        <h2>Roject is a programming project manager written in Ruby. With Roject, you can create and edit projects based on templates using simple commands without a heavy IDE.</h2>
+        <a href="https://github.com/andydevs/roject" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="roject" class="anchor" href="#roject" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Roject</h1>
+
+<p>Roject is a programming project manager written in Ruby. With Roject, you can create and edit projects based on templates and using simple, customisable commands without a heavy IDE.</p>
+
+<h2>
+<a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Table of Contents</h2>
+
+<ul>
+<li>
+<a href="#project-script">Project Script</a>
+
+<ul>
+<li><a href="#config">Config</a></li>
+<li><a href="#makers">Makers</a></li>
+</ul>
+</li>
+<li><a href="#the-command-line">The Command Line</a></li>
+</ul>
+
+<h2>
+<a id="project-script" class="anchor" href="#project-script" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project Script</h2>
+
+<p>A Roject project is configured using a project script in a project directory, create a ruby script called "project.rb". This ruby script is evaluated in the context of a Roject project object and contains information about the project, the types of files that can be made, and the tasks that can be performed.</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># Config</span>
+config <span class="pl-c1">project_name:</span> <span class="pl-s"><span class="pl-pds">"</span>Dre<span class="pl-pds">"</span></span>,
+<span class="pl-c1">author:</span> <span class="pl-s"><span class="pl-pds">"</span>Anshul Kharbanda<span class="pl-pds">"</span></span>,
+<span class="pl-c1">created:</span> <span class="pl-s"><span class="pl-pds">"</span>7 - 23 - 2016<span class="pl-pds">"</span></span>,
+<span class="pl-c1">short_description:</span> <span class="pl-s"><span class="pl-pds">"</span>Forgot about Dre.<span class="pl-pds">"</span></span>,
+<span class="pl-c1">long_description:</span> <span class="pl-s"><span class="pl-pds">"</span>Nowadays everybody wanna talk like<span class="pl-pds">"</span></span> \
+<span class="pl-s"><span class="pl-pds">"</span> they got somethin' to say but nothin' comes out<span class="pl-pds">"</span></span> \
+<span class="pl-s"><span class="pl-pds">"</span> when they move their lips just a bunch of gibberish<span class="pl-pds">"</span></span> \
+<span class="pl-s"><span class="pl-pds">"</span> and they all acting like they forgot about Dre.<span class="pl-pds">"</span></span>
+
+<span class="pl-c">#---------------------------MAKERS---------------------------</span>
+
+<span class="pl-c"># Header file</span>
+file <span class="pl-c1">:header</span>, 
+<span class="pl-c1">path:</span> <span class="pl-s"><span class="pl-pds">"</span>include/@(project_name)/@(path)<span class="pl-pds">"</span></span>,
+<span class="pl-c1">template:</span> <span class="pl-s"><span class="pl-pds">"</span>header.general<span class="pl-pds">"</span></span>,
+<span class="pl-c1">extension:</span> <span class="pl-s"><span class="pl-pds">"</span>h<span class="pl-pds">"</span></span>
+
+<span class="pl-c"># Source file</span>
+file <span class="pl-c1">:source</span>, 
+<span class="pl-c1">path:</span> <span class="pl-s"><span class="pl-pds">"</span>src/@(path)<span class="pl-pds">"</span></span>,
+<span class="pl-c1">template:</span> <span class="pl-s"><span class="pl-pds">"</span>source.general<span class="pl-pds">"</span></span>,
+<span class="pl-c1">extension:</span> <span class="pl-s"><span class="pl-pds">"</span>cpp<span class="pl-pds">"</span></span>
+
+<span class="pl-c"># Module includes a source and include</span>
+task <span class="pl-c1">:module</span> <span class="pl-k">do </span>|<span class="pl-smi">args</span>|
+    <span class="pl-c"># Add header id</span>
+    args[<span class="pl-c1">:header_id</span>] <span class="pl-k">=</span> c_header_id(args[<span class="pl-c1">:path</span>])
+
+    <span class="pl-c"># Create source and header</span>
+    make <span class="pl-c1">:header</span>, args
+    make <span class="pl-c1">:source</span>, args
+<span class="pl-k">end</span></pre></div>
+
+<p>In this script, the project information (project_name, author, etc.) is configured using the <code>config</code> method, which is given a hash of the project info. After which, project makers (automated tasks that can be called via the command line) are defined using the <code>file</code> and <code>task</code> methods. The <code>file</code> method creates a file maker which makes files according to the information given using the command line arguments. The <code>task</code> method creates a task maker which executes the given block with the command line arguments.</p>
+
+<h3>
+<a id="config" class="anchor" href="#config" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Config</h3>
+
+<p>Projects are configured using the <code>config</code> method:</p>
+
+<div class="highlight highlight-source-ruby"><pre>config <span class="pl-c1">project_name:</span> <span class="pl-s"><span class="pl-pds">"</span>Dre<span class="pl-pds">"</span></span>,
+<span class="pl-c1">author:</span> <span class="pl-s"><span class="pl-pds">"</span>Anshul Kharbanda<span class="pl-pds">"</span></span>,
+<span class="pl-c1">created:</span> <span class="pl-s"><span class="pl-pds">"</span>7 - 23 - 2016<span class="pl-pds">"</span></span>,
+<span class="pl-c1">short_description:</span> <span class="pl-s"><span class="pl-pds">"</span>Forgot about Dre.<span class="pl-pds">"</span></span>,
+<span class="pl-c1">long_description:</span> <span class="pl-s"><span class="pl-pds">"</span>Nowadays everybody wanna talk like<span class="pl-pds">"</span></span> \
+<span class="pl-s"><span class="pl-pds">"</span> they got somethin' to say but nothin' comes out<span class="pl-pds">"</span></span> \
+<span class="pl-s"><span class="pl-pds">"</span> when they move their lips just a bunch of gibberish<span class="pl-pds">"</span></span> \
+<span class="pl-s"><span class="pl-pds">"</span> and they all acting like they forgot about Dre.<span class="pl-pds">"</span></span></pre></div>
+
+<p>This command should be passed a hash of project info keys, of which are the following:</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">Key</th>
+<th align="center">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">project_name</td>
+<td align="center">the name of the project</td>
+</tr>
+<tr>
+<td align="center">author</td>
+<td align="center">the project's author</td>
+</tr>
+<tr>
+<td align="center">created</td>
+<td align="center">the date the project was created</td>
+</tr>
+<tr>
+<td align="center">short_description</td>
+<td align="center">a short description of the project</td>
+</tr>
+<tr>
+<td align="center">long_description</td>
+<td align="center">a long description of the project</td>
+</tr>
+</tbody>
+</table>
+
+<p>There are also optional options to set. The <code>directory</code> key is a hash of essential directories. The <code>templates</code> key within the <code>directory</code> hash determines where project templates are located, and defaults to <code>_templates</code>. Of course, this can also be changed to your liking.</p>
+
+<div class="highlight highlight-source-ruby"><pre>config <span class="pl-c1">project_name:</span> <span class="pl-s"><span class="pl-pds">"</span>Dre<span class="pl-pds">"</span></span>,
+<span class="pl-c1">author:</span> <span class="pl-s"><span class="pl-pds">"</span>Anshul Kharbanda<span class="pl-pds">"</span></span>,
+<span class="pl-c1">created:</span> <span class="pl-s"><span class="pl-pds">"</span>7 - 23 - 2016<span class="pl-pds">"</span></span>,
+<span class="pl-c1">short_description:</span> <span class="pl-s"><span class="pl-pds">"</span>Forgot about Dre.<span class="pl-pds">"</span></span>,
+<span class="pl-c1">long_description:</span> <span class="pl-s"><span class="pl-pds">"</span>Nowadays everybody wanna talk like<span class="pl-pds">"</span></span> \
+<span class="pl-s"><span class="pl-pds">"</span> they got somethin' to say but nothin' comes out<span class="pl-pds">"</span></span> \
+<span class="pl-s"><span class="pl-pds">"</span> when they move their lips just a bunch of gibberish<span class="pl-pds">"</span></span> \
+<span class="pl-s"><span class="pl-pds">"</span> and they all acting like they forgot about Dre.<span class="pl-pds">"</span></span>,
+<span class="pl-c1">directory:</span> {
+    <span class="pl-c1">templates:</span> <span class="pl-s"><span class="pl-pds">"</span>new-templates-dir<span class="pl-pds">"</span></span>
+}</pre></div>
+
+<h3>
+<a id="makers" class="anchor" href="#makers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Makers</h3>
+
+<p>Project makers are also specified int the Project script. Makers are automated tasks that create new files. There are two types of makers to date.</p>
+
+<h4>
+<a id="file-makers" class="anchor" href="#file-makers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>File Makers</h4>
+
+<p>File makers are specified using the <code>file</code> method.</p>
+
+<div class="highlight highlight-source-ruby"><pre>file <span class="pl-c1">:header</span>, 
+<span class="pl-c1">path:</span> <span class="pl-s"><span class="pl-pds">"</span>include/@(project_name)/@(path)<span class="pl-pds">"</span></span>,
+<span class="pl-c1">template:</span> <span class="pl-s"><span class="pl-pds">"</span>header.general<span class="pl-pds">"</span></span>,
+<span class="pl-c1">extension:</span> <span class="pl-s"><span class="pl-pds">"</span>h<span class="pl-pds">"</span></span></pre></div>
+
+<p>Roject uses the <a href="http://andydevs.github.io/general">General</a> templating library for file and string templates. FileMakers use general templates, project information, and command line arguments to create files of specific types. File templates are located in the <code>templates</code> directory (which is set using <code>config</code>).</p>
+
+<p>The <code>file</code> method is passed a name (used to call the maker via the command line arguments), and a hash of options, which should include the following:</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">Key</th>
+<th align="center">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">path</td>
+<td align="center">The path of the file, as a General template string (parsed on creation of the file)</td>
+</tr>
+<tr>
+<td align="center">template</td>
+<td align="center">The filename of the General template file to format</td>
+</tr>
+<tr>
+<td align="center">extension</td>
+<td align="center">The file extension</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="task-makers" class="anchor" href="#task-makers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Task Makers</h4>
+
+<p>Task makers are specified using the <code>task</code> method.</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># Module includes a source and include</span>
+task <span class="pl-c1">:module</span> <span class="pl-k">do </span>|<span class="pl-smi">args</span>|
+    <span class="pl-c"># Add header id</span>
+    args[<span class="pl-c1">:header_id</span>] <span class="pl-k">=</span> c_header_id(args[<span class="pl-c1">:path</span>])
+
+    <span class="pl-c"># Create source and header</span>
+    make <span class="pl-c1">:header</span>, args
+    make <span class="pl-c1">:source</span>, args
+<span class="pl-k">end</span></pre></div>
+
+<p>The <code>task</code> method is passed the command line name and a block which is called when the task is called from the command line, which takes one hash of arguments parsed from the command line.</p>
+
+<h2>
+<a id="the-command-line" class="anchor" href="#the-command-line" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Command Line</h2>
+
+<p>The Roject library comes with the <code>roject</code> binary script, from which you call the project makers that were defined.</p>
+
+<pre><code>$ roject [maker name] [command line arguments]
+</code></pre>
+
+<p>Command line arguments are key-value pairs which follow the following pattern: <code>[key]:[value]</code>. The script will search the current directory for a project script, read it, and run the given maker in the context of the project.</p>
+
+<hr>
+
+<p>Anshul Kharbanda</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/andydevs/roject/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/andydevs/roject/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/andydevs/roject"></a> is maintained by <a href="https://github.com/andydevs">andydevs</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
