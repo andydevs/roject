@@ -107,6 +107,8 @@ template: "header.general",
 extension: "h"
 ```
 
+Roject uses the [General](http://andydevs.github.io/general) templating library for file and string templates. FileMakers use general templates, project information, and command line arguments to create files of specific types. File templates are located in the `templates` directory (which is set using config [as mentioned above](#config))
+
 The `file` method is passed a name (used to call the maker via the command line arguments), and a hash of options, which should include the following:
 
 |    Key    |                     Description                     |
