@@ -48,5 +48,5 @@ Gem::Specification.new do |spec|
 			   + ["Rakefile", "LICENSE", "README.md"]
 
 	# Executables
-	spec.executables << "bin/roject"
+	spec.executables << "roject"
 end
