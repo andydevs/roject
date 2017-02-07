@@ -65,7 +65,7 @@ module Roject
 			args.merge! project.config
 
 			# Get path
-			path = "#{@path.apply(args)}.#{@extension}"
+			path = "#{@path.apply(args)}" + (@extension.nil? ? "" : ".#{@extension}")
 
 			# Create directory
 			dir = File.dirname(path)
