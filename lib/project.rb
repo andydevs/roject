@@ -109,7 +109,7 @@ module Roject
 		#
 		# Parameter: name - the name of the maker to run
 		# Parameter: args - the args to pass to the file
-		def make(name, args)
+		def make name, args={}
 			if @makers.has_key? name
 				@makers[name].make self, args
 			else
